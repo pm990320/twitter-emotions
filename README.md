@@ -35,4 +35,4 @@ The flow of execution then should be:
 3. `prune_data.py`
 4. `analyse_crowdsource.py`
 
-All data is inspectable under the `data/` path.
+All data is inspectable under the `data/` path. If the MongoDB data archive does not work, the tweet data used is also supplied in `csv` format in this path.
