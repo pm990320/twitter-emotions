@@ -6,6 +6,7 @@ dependencies:
   - pandas
   - nltk
   - numpy
+  - scikit-learn
   - pip
   - pip:
     - TwitterAPI

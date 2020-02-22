@@ -24,3 +24,15 @@ TWITTER_CONSUMER_SECRET
 TWITTER_ACCESS_TOKEN
 TWITTER_ACCESS_TOKEN_SECRET
 ```
+
+## Instructions on Running (for Marker)
+
+If you would like to use the sample data, do not run `save_tweets.py` as this will begin appending to the dataset and may skew the values.
+
+The flow of execution then should be:
+1. `process_tweets.py`
+2. `data_stats.py`
+3. `prune_data.py`
+4. `analyse_crowdsource.py`
+
+All data is inspectable under the `data/` path.

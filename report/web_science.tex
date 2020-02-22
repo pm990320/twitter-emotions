@@ -95,26 +95,29 @@ Emoticons are used in the Twitter API stage of processing - since emojis can be 
 Beyond this, emoticons are not taken into consideration in later processing steps. This is because the content of words similarity can be compared with Word2Vec but emoticons cannot.
 
 
-\section{Crowdsourcing Method}
-\subsection{Crowdsourcing Details}
+\section{Crowdsourcing}
+\subsection{Details}
 
 Crowdsourcing is suitable for this problem as tweets are small, easy to parse sentences / pieces of information / streams of consciousness. Each crowdsourcing worker can analyse the emotion of a tweet independent of other workers, the work can be distributed easily.
 
-The crowdsourcing micro task is simple - there is only one, to select the emotion label for a given tweet. The question ``Which word best describes the emotion of this tweet?'' was chosen. Each assignment carried a reward of \$0.01.
+The crowdsourcing micro task is simple - there is only one, to select the emotion label for a given tweet. The question ``Which word best describes the emotion of this tweet?'' was chosen. Each assignment carried a reward of \$0.01.  The Crowdsourcing was run with 90 examples - 15 per class, each example distributed to 2 different workers.
 
-
-
-%Step3: configuration & result management
+All examples were accepted. There was no honeypot or qualification technique employed. Human emotions are subjective and it would be difficult to make a honeypot without it being ridiculously obvious. However, this is one potential improvement that could be made.
 
 % Step 4: select the crowdsourcing platform to use
 The crowdsourcing platform of choice was Amazon Mechanical Turk. It was chosen for its ease of use and economical rate. There was one issue with it in that MTurk rejected the CSV upload initially because of emojis in the text. In order to get round this and display emojis, I made use of this code found on Github \url{https://github.com/charman/mturk-emoji}. The designed Mechanical Turk HTML file is available in the \lstinline{mturk/} folder in the project repo.
 
-% Step 5: Publish
-% TEST MODE / DEBUG
-% LIVE
+All in all the result gathering was relatively inexpensive, coming in at \$3.60. If more accurate classification was desired, more could be invested in crowd-sourcing and in the process around crowd-sourcing, e.g. using honeypots.
 
-\subsection{Results and Discussion}
+\subsection{Results}
 
+\lstinline{scikit-learn} classification report between the human labels and process generated labels:
+
+\lstinputlisting{../results/cl_report.txt}
+
+Overall, the performance is not the best, as all the scores are relatively low. It is clear that there is better performance on strong emotions like ``happy'' and ``anger''. There is also better performance on generally positive emotions, like happy and pleasant.
+
+The results of the crowdsourcing also contained a lot of disagreement between the two workers. An improvement could be made to increase the number of workers assigned to each HIT, so as to use the modal value. This, however, would increase the cost and latency.
 
 %\bibliographystyle{plain}
 %\bibliography{coursework}
