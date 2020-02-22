@@ -1,5 +1,5 @@
 from dateutil.parser import parse as date_parse
-from mongoengine import DoesNotExist
+from mongoengine import DoesNotExist, NotUniqueError
 
 from web_science.get_tweets import get_preclean_tweets
 from web_science.database_models import connect_to_mongo, Tweet
@@ -26,7 +26,12 @@ def do_save_tweets():
             tweet_model.text = tweet.get("text")
             tweet_model.emotion_label = emotion
             tweet_model.created_at = date_parse(tweet.get("created_at"))
-            tweet_model.save()
+
+            # ensure no duplicates end up in the dataset
+            try:
+                tweet_model.save()
+            except NotUniqueError:
+                print(f"Tweet {tweet_model.id_str} not unique - not persisting...")
 
 
 if __name__ == "__main__":

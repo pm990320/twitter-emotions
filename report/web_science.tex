@@ -74,7 +74,7 @@ Initially, the \lstinline{track} parameter of the API call is given all the key 
 
 Then, these are initially filtered using a naive approach, by checking for the presence of other emotion labels' keywords in the tweets, and discarding the tweet if there is a match. This, in the simplest form, gives some confidence in the labels being reasonably clean.
 
-The tweets are then persisted in MongoDB, and the \lstinline{process_tweets.py} file can be run, which makes a more accurate re-labelling of the tweets, by utilising Google's pre-trained Word2Vec. By computing the consine similarity of each ``emotion'' word with every word in the tweet, averaging and comparing the relative similarity scores for emotions, we can make a much better guess at the class of each tweet.
+The tweets are then persisted in MongoDB, and tweets are deduped with a uniqueness constraint on the tweet body. Then the \lstinline{process_tweets.py} file can be run, which makes a more accurate re-labelling of the tweets, by utilising Google's pre-trained Word2Vec. By computing the consine similarity of each ``emotion'' word with every word in the tweet, averaging and comparing the relative similarity scores for emotions, we can make a much better guess at the class of each tweet.
 
 In addition to this, the \lstinline{process_tweets.py} file removes ``RT: @username'', any @ mentions and any ellipsis ... from the tweets.
 

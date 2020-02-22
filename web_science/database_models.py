@@ -17,7 +17,7 @@ def connect_to_mongo():
 class Tweet(Document):
     id_str = StringField(unique=True)
     emotion_label = StringField()
-    text = StringField()
+    text = StringField(unique=True)
     created_at = DateTimeField()
     meta = {'allow_inheritance': True}
 
