@@ -15,7 +15,7 @@ from web_science.emotions import get_emotion_pure_words
 
 RT_REGEX = re.compile("^(RT @.*: )")
 HANDLE_REGEX = re.compile("(@\w{1,15})\s")
-INCOMPLETE_WORD_REGEX = re.compile("^.* (\w+…)$")
+INCOMPLETE_WORD_REGEX = re.compile("^.* (\w+…) ")
 EMOTION_WORDS = get_emotion_pure_words()
 SIMILARITY_THRESHOLD = 0.20
 
@@ -123,6 +123,7 @@ def process_tweets():
     word2vec_model = api.load('word2vec-google-news-300')
     print("Word2Vec model loaded.")
 
+    # for tweet in Tweet.objects(id_str__nin=[t.id_str for t in ProcessedTweet.objects.all()]):
     for tweet in Tweet.objects():
         print(f"Processing {tweet.id_str}")
         try:

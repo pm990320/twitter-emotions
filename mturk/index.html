@@ -1,0 +1,95 @@
+<!-- You must include this JavaScript file -->
+<script src="https://assets.crowd.aws/crowd-html-elements.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.js"
+        integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+        crossorigin="anonymous"></script>
+<script type="text/javascript">
+    /* Taken from https://raw.githubusercontent.com/charman/mturk-emoji/master/decode_emoji.js */
+
+    function displayEmoji() {
+
+    /**
+    * utf8ByteArrayToString() copied from:
+    *   https://github.com/google/closure-library/blob/e877b1eac410c0d842bcda118689759512e0e26f/closure/goog/crypt/crypt.js
+    *
+    * Converts a UTF-8 byte array to JavaScript's 16-bit Unicode.
+    * @param {Uint8Array|Array<number>} bytes UTF-8 byte array.
+    * @return {string} 16-bit Unicode string.
+    */
+    var utf8ByteArrayToString = function(bytes) {
+    var out = [], pos = 0, c = 0;
+    while (pos < bytes.length) {
+        var c1 = bytes[pos++];
+        if (c1 < 128) {
+        out[c++] = String.fromCharCode(c1);
+        } else if (c1 > 191 && c1 < 224) {
+        var c2 = bytes[pos++];
+        out[c++] = String.fromCharCode((c1 & 31) << 6 | c2 & 63);
+        } else if (c1 > 239 && c1 < 365) {
+        // Surrogate Pair
+        var c2 = bytes[pos++];
+        var c3 = bytes[pos++];
+        var c4 = bytes[pos++];
+        var u = ((c1 & 7) << 18 | (c2 & 63) << 12 | (c3 & 63) << 6 | c4 & 63) -
+                0x10000;
+        out[c++] = String.fromCharCode(0xD800 + (u >> 10));
+        out[c++] = String.fromCharCode(0xDC00 + (u & 1023));
+        } else {
+        var c2 = bytes[pos++];
+        var c3 = bytes[pos++];
+        out[c++] =
+            String.fromCharCode((c1 & 15) << 12 | (c2 & 63) << 6 | c3 & 63);
+        }
+    }
+    return out.join('');
+    }
+
+    jQuery(this).text(utf8ByteArrayToString(JSON.parse(jQuery(this).attr('data-emoji-bytes'))));
+    }
+
+</script>
+<script type="text/javascript">
+$(document).ready(function() {
+    $('span.emoji-bytes').each(displayEmoji);
+});
+</script>
+
+<!-- For the full list of available Crowd HTML Elements and their input/output documentation,
+      please refer to https://docs.aws.amazon.com/sagemaker/latest/dg/sms-ui-template-reference.html -->
+
+<!-- You must include crowd-form so that your task submits answers to MTurk -->
+<crowd-form answer-format="flatten-objects">
+
+    <!-- The crowd-classifier element will create a tool for the Worker to select the
+           correct answer to your question -->
+    <crowd-classifier 
+        categories="['Anger', 'Fear', 'Happiness', 'Excitement', 'Surprise', 'Pleasant']"
+        header="Which word best describes the emotion of this tweet?"
+        name="emotion">
+
+        <!-- The text you want classified will be substituted for the "text" variable when
+               you publish a batch with a CSV input file containing multiple text items  -->
+        <classification-target> ${text} </classification-target>
+
+        <!-- Use the short-instructions section for quick instructions that the Worker
+              will see while working on the task. Including some basic examples of 
+              good and bad answers here can help get good results. You can include 
+              any HTML here. -->
+        <short-instructions>
+            <p>Select the <strong>primary</strong> emotion the text is expressing.</p>
+        </short-instructions>
+
+        <!-- Use the full-instructions section for more detailed instructions that the 
+              Worker can open while working on the task. Including more detailed 
+              instructions and additional examples of good and bad answers here can
+              help get good results. You can include any HTML here. -->
+        <full-instructions header="Emotion Detection Instructions">
+            <p>Select the <strong>primary</strong> emotion that's expressed in the audio clip.</p>
+            <p>
+              If there are multiple emotions expressed, use your judgement and 
+              choose the one that's is the strongest of the emotions.
+            </p>
+        </full-instructions>
+
+    </crowd-classifier>
+</crowd-form>

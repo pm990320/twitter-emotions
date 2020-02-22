@@ -3,10 +3,10 @@ import string
 
 EMOTION_CLASS_TO_MATCH_TERMS_MAP = {
     "excitement": ["#excited", "#excitement", "😁"],
-    "happy": ["#happy", "#joy", "#joyful", "#love", "#loving", "😀", ":)"],
+    "happy": ["#happy", "#joy", "#love", "😀", ":)"],
     "pleasant": ["#pleasant", "#calm", "#positive", "🙂"],
     "surprise": ["#sad", "#frustrated", "#negative", "😧", "😮", ":("],
-    "fear": ["#scared", "#afraid", "#disgusted", "#depressing", "#depressed", "😳", "😢", "😨"],
+    "fear": ["#scared", "#afraid", "#disgusted", "#depressed", "😳", "😢", "😨"],
     "anger": ["#angry", "#mad", "#raging", "😡", "😠", "☹️"]
 }
 

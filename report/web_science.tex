@@ -13,6 +13,7 @@
 \usepackage{csvsimple}
 \usepackage{pgfplotstable,filecontents}
 \usepackage{booktabs}
+\usepackage{float}
 
 \begin{document}
 \title{Web Science Coursework - Social Media Emotion Data Set - Level M}
@@ -39,13 +40,16 @@ The reason this was chosen was that it would allow the code to ingest a signific
 
 The API allows the \lstinline{track} parameter to be specified, which can include various keywords to match. In the implementation, emotion label terms and emoticons are included in this parameter in order to filter results for each emotion.
 
+It was important to deduplicate the data on the body of tweets, as the same tweet appears multiple times in the stream feed.
+
 \subsection{Collected data}
 
 % Give data statistics. A table with a.Total   and   individual   class   distribution   along   with   time period in which data collected.
 
-Here is a table showing the distribution of assumed classes before processing, and the time ranges from which the tweets were collected.
+Here is a table showing the distribution of assumed classes after processing, and the time ranges from which the tweets were collected. For some emotions, the criteria would not find as many as 150 tweets for the class, and disproportionately more for ``fear'' and ``happy''. Hence, these were truncated to 150.
 
-%\centering
+\begin{figure}[H]
+\centering
 \pgfplotstabletypeset[
 	col sep=comma,
 	string type,
@@ -59,10 +63,14 @@ Here is a table showing the distribution of assumed classes before processing, a
     },
 	display columns/0/.style={column name={\textbf{Emotion Label}}},
     display columns/1/.style={column name={\textbf{Count}}},
-    display columns/2/.style={column name={\textbf{Date Range}}},
-    display columns/3/.style={column name={\textbf{Date Range}}},
+    display columns/2/.style={column name={\begin{flushleft}
+    	\textbf{Date Range}
+    \end{flushleft}}},
+    display columns/3/.style={column name={\textbf{}}},
     header=false
 ]{../results/2b.csv}
+
+\end{figure}
 
 \subsection{Processing of Tweets}
 
@@ -86,9 +94,27 @@ Emoticons are used in the Twitter API stage of processing - since emojis can be 
 
 Beyond this, emoticons are not taken into consideration in later processing steps. This is because the content of words similarity can be compared with Word2Vec but emoticons cannot.
 
+
 \section{Crowdsourcing Method}
 \subsection{Crowdsourcing Details}
+
+Crowdsourcing is suitable for this problem as tweets are small, easy to parse sentences / pieces of information / streams of consciousness. Each crowdsourcing worker can analyse the emotion of a tweet independent of other workers, the work can be distributed easily.
+
+The crowdsourcing micro task is simple - there is only one, to select the emotion label for a given tweet. The question ``Which word best describes the emotion of this tweet?'' was chosen. Each assignment carried a reward of \$0.01.
+
+
+
+%Step3: configuration & result management
+
+% Step 4: select the crowdsourcing platform to use
+The crowdsourcing platform of choice was Amazon Mechanical Turk. It was chosen for its ease of use and economical rate. There was one issue with it in that MTurk rejected the CSV upload initially because of emojis in the text. In order to get round this and display emojis, I made use of this code found on Github \url{https://github.com/charman/mturk-emoji}. The designed Mechanical Turk HTML file is available in the \lstinline{mturk/} folder in the project repo.
+
+% Step 5: Publish
+% TEST MODE / DEBUG
+% LIVE
+
 \subsection{Results and Discussion}
+
 
 %\bibliographystyle{plain}
 %\bibliography{coursework}
