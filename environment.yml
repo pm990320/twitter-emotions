@@ -1,0 +1,14 @@
+name: web-science
+channels:
+  - conda-forge
+dependencies:
+  - python-dotenv
+  - pandas
+  - nltk
+  - numpy
+  - pip
+  - pip:
+    - TwitterAPI
+    - mongoengine
+    - gensim
+    - python-dateutil

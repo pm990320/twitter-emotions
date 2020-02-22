@@ -1,0 +1,96 @@
+\documentclass{mproj}
+\usepackage{graphicx}
+\usepackage{titlesec}
+\usepackage{array,etoolbox}
+\preto\tabular{\setcounter{magicrownumbers}{0}}
+\newcounter{magicrownumbers}
+\newcommand\rownumber{\stepcounter{magicrownumbers}\arabic{magicrownumbers}}
+\setcounter{secnumdepth}{4}
+\usepackage{longtable}
+\usepackage{url}
+\usepackage{listings}
+\lstset{basicstyle={\ttfamily}}
+\usepackage{csvsimple}
+\usepackage{pgfplotstable,filecontents}
+\usepackage{booktabs}
+
+\begin{document}
+\title{Web Science Coursework - Social Media Emotion Data Set - Level M}
+\author{Patrick Menlove - 2250066M}
+\date{\today}
+\maketitle
+
+\newpage
+
+\section{Introduction}
+% Describe the software developed with appropriate details; if you have used code from elsewhere please specify it
+% Specify the time and duration of data collected
+
+This assignment concerns gathering cleanly labelled tweets for different emotion classes from Twitter. The solution used employs the use of the Twitter API and Google's Word2Vec.
+
+The code uses several libraries (all of which can be found in the \lstinline{environment.yml} file), and uses MongoDB for data storage.
+
+\section{Data crawl \& Rules}
+\subsection{Twitter API}
+
+The code uses the Twitter Streaming API to collect data in real-time when run. To be specific, the \lstinline!1.1/statuses/filter.json! endpoint (wrapped under the \lstinline{TwitterAPI} library - \url{https://github.com/geduldig/TwitterAPI}).
+
+The reason this was chosen was that it would allow the code to ingest a significant volume of tweets and not be limited by twitter's premium search API rate limits. It also gives real-time, current, relevant tweets on which to do analyses.
+
+The API allows the \lstinline{track} parameter to be specified, which can include various keywords to match. In the implementation, emotion label terms and emoticons are included in this parameter in order to filter results for each emotion.
+
+\subsection{Collected data}
+
+% Give data statistics. A table with a.Total   and   individual   class   distribution   along   with   time period in which data collected.
+
+Here is a table showing the distribution of assumed classes before processing, and the time ranges from which the tweets were collected.
+
+%\centering
+\pgfplotstabletypeset[
+	col sep=comma,
+	string type,
+	every head row/.style={
+        before row={%
+            \toprule
+        }
+    },
+    every last row/.style={
+        after row=\bottomrule
+    },
+	display columns/0/.style={column name={\textbf{Emotion Label}}},
+    display columns/1/.style={column name={\textbf{Count}}},
+    display columns/2/.style={column name={\textbf{Date Range}}},
+    display columns/3/.style={column name={\textbf{Date Range}}},
+    header=false
+]{../results/2b.csv}
+
+\subsection{Processing of Tweets}
+
+\subsubsection{Clean Data}
+
+In order to collect reasonably clean data, the code uses a series of search filters and transformations.
+
+Initially, the \lstinline{track} parameter of the API call is given all the key words, so the streamed tweets are what twitter believes to have relevance to the kerywords/hashtags that have been identified as synonymous with the emotion label.
+
+Then, these are initially filtered using a naive approach, by checking for the presence of other emotion labels' keywords in the tweets, and discarding the tweet if there is a match. This, in the simplest form, gives some confidence in the labels being reasonably clean.
+
+The tweets are then persisted in MongoDB, and the \lstinline{process_tweets.py} file can be run, which makes a more accurate re-labelling of the tweets, by utilising Google's pre-trained Word2Vec. By computing the consine similarity of each ``emotion'' word with every word in the tweet, averaging and comparing the relative similarity scores for emotions, we can make a much better guess at the class of each tweet.
+
+In addition to this, the \lstinline{process_tweets.py} file removes ``RT: @username'', any @ mentions and any ellipsis ... from the tweets.
+
+Stemming or lemmaisation was considered, but this would not preserve the tweets human-readable nature for the crowd-sourcing. Though, the raw tweet text could be supplied for crowdsourcing and the lemmaised version be stored for computational use.
+
+\subsubsection{Use of Emoticons}
+
+Emoticons are used in the Twitter API stage of processing - since emojis can be passed as unicode strings, and the API accepts emojis to search for in the \lstinline{track} parameter.
+
+Beyond this, emoticons are not taken into consideration in later processing steps. This is because the content of words similarity can be compared with Word2Vec but emoticons cannot.
+
+\section{Crowdsourcing Method}
+\subsection{Crowdsourcing Details}
+\subsection{Results and Discussion}
+
+%\bibliographystyle{plain}
+%\bibliography{coursework}
+
+\end{document}
